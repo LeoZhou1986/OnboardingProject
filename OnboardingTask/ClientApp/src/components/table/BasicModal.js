@@ -41,12 +41,13 @@ export default class BasicModal extends Component {
     }
 
     handleSelectValueChange = (e, data) => {
+        console.log(`handleSelectValueChange: ${JSON.stringify(e.target.textContent)}`);
         this.setState({
             newData: Object.assign(
                 this.state.newData,
                 {
                     [this.props.options[data.name + "Key"]]: data.value,
-                    [data.name]: data.value
+                    [data.name]: e.target.textContent
                 }
             )
         });

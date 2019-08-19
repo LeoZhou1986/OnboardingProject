@@ -94,11 +94,22 @@ export default class BasicDataList extends Component {
         }
     };
 
-    createData = data => {
+    createData = newData => {
         this.setState({ open: false })
         var request = {}
+        var postData;
+        if (this.state.options !== null && this.state.options.dataFormat !== undefined) {
+            let dataFormat = this.state.options.dataFormat;
+            postData = {};
+            for (let i = 0; i < dataFormat.length; i++) {
+                const key = dataFormat[i];
+                postData[key] = newData[key];
+            }
+        } else {
+            postData = newData;
+        }
         request.tableFormat = this.getTableFormat();
-        request[this.props.dataName] = data;
+        request[this.props.dataName] = postData;
         fetch(`api/${this.props.controller}/Create`, {
             method: 'POST',
             headers: {
