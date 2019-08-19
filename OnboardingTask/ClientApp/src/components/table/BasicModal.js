@@ -44,7 +44,10 @@ export default class BasicModal extends Component {
         this.setState({
             newData: Object.assign(
                 this.state.newData,
-                { [this.props.options[data.name + "Key"]]: data.value }
+                {
+                    [this.props.options[data.name + "Key"]]: data.value,
+                    [data.name]: data.value
+                }
             )
         });
     }
@@ -121,12 +124,18 @@ export default class BasicModal extends Component {
                     modalHeader = modalType + " " + this.props.dataName;
                     let formFields = [];
                     let columns = this.props.columns;
+                    var buttonDisable = false;
                     for (let i = 0; i < columns.length; i++) {
                         const name = columns[i][0];
                         const dataType = columns[i][1];
                         const currentData = Object.assign({}, this.props.modalData, this.state.newData)
                         const formField = this.getFormField(name, dataType, currentData, this.props.options);
-                        if (formField !== undefined) formFields.push(formField);
+                        if (formField !== undefined)
+                        {
+                            formFields.push(formField);
+                            if (currentData[name] === undefined || currentData[name] === "" ) buttonDisable = true;
+                        }
+                        
                     }
                     modalContent =
                         <Form loading={this.props.loading}>
@@ -136,6 +145,7 @@ export default class BasicModal extends Component {
                         <Button
                             positive
                             icon labelPosition='right'
+                            disabled={buttonDisable}
                             onClick={modalType === "Edit" ? this.handleConfirmEdit : this.handleConfirmCreate}
                         >
                             {modalType === "Edit"?"edit":"create"}
