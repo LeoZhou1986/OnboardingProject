@@ -9,8 +9,11 @@ namespace OnboardingTask.Controllers
     [Route("api/[controller]")]
     public class StoresController : Controller
     {
-        private readonly OnboardingTaskContext _context = new OnboardingTaskContext();
-
+        private readonly OnboardingTaskContext _context;
+        public StoresController(OnboardingTaskContext context)
+        {
+            _context = context;
+        }
         // GET: api/Stores/Index
         [HttpGet("[action]")]
         public ActionResult Index(int tableSize, string sortColumn, bool asc, int currentPage)

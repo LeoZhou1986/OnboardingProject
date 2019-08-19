@@ -10,7 +10,10 @@ namespace OnboardingTask.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly OnboardingTaskContext _context = new OnboardingTaskContext();
-
+        public ProductsController(OnboardingTaskContext context)
+        {
+            _context = context;
+        }
         // GET: api/Products/Index
         [HttpGet("[action]")]
         public ActionResult Index(int tableSize, string sortColumn, bool asc, int currentPage)
