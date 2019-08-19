@@ -15,7 +15,6 @@ export default class BasicTableRow extends Component {
             var value;
             if (dataType === "date") {
                 value = Moment(data[name]).format('DD MMM, YYYY');
-                console.log(`date: ${value}`);
             } else {
                 value = data[name];
             }

@@ -11,11 +11,12 @@ export default class BasicModal extends Component {
             modalType: 'Delete',    // Delete, Edit, Create, Message?
             loading: false,
             options: null,
-            newData: null
+            newData: {}
         };
     }
 
     handleCloseModal = () => {
+        this.setState({ newData: {} });
         this.props.handleCloseModal();
     }
 
@@ -24,30 +25,32 @@ export default class BasicModal extends Component {
     }
 
     handleConfirmEdit = () => {
-        this.props.editData(this.state.newData);
+        var newData = Object.assign({}, this.props.modalData, this.state.newData);
+        this.setState({ newData: {} });
+        this.props.editData(newData);
     }
 
     handleConfirmCreate = () => {
-        this.props.createData(this.state.newData);
+        var newData = Object.assign({}, this.props.modalData, this.state.newData);
+        this.setState({ newData: {} });
+        this.props.createData(Object.assign({}, this.props.modalData, newData));
     }
 
     handleInputValueChange = (e) => {
-        var newData = {};
-        newData[e.target.name] = e.target.value;
-        this.setState({ newData: Object.assign({}, this.state.newData, newData) });
+        this.setState({ newData: Object.assign(this.state.newData, { [e.target.name]: e.target.value}) });
     }
 
     handleSelectValueChange = (e, data) => {
-        var newData = {};
-        newData[this.props.options[data.name + "Key"]] = data.value;
-        newData[data.name] = data.text;
-        newData = Object.assign(this.state.newData, newData)
-        this.setState({ newData: newData });
+        this.setState({
+            newData: Object.assign(
+                this.state.newData,
+                { [this.props.options[data.name + "Key"]]: data.value }
+            )
+        });
     }
 
     handleDateChange = (event, { name, value }) => {
-        var newData = Object.assign(this.state.newData, { [name]: value })
-        this.setState({ newData: newData });
+        this.setState({ newData: Object.assign(this.state.newData, { [name]: value }) });
     }
 
     getFormField = (name, dataType, data, options) => {
@@ -99,9 +102,6 @@ export default class BasicModal extends Component {
         let modalType = this.props.modalType;
 
         if (this.props.open) {
-            if (this.state.newData === null) {
-                this.state.newData = Object.assign({}, this.props.modalData)
-            }
             switch (modalType) {
                 case "Delete":
                     modalHeader = modalType + " " + this.props.dataName;
@@ -124,7 +124,8 @@ export default class BasicModal extends Component {
                     for (let i = 0; i < columns.length; i++) {
                         const name = columns[i][0];
                         const dataType = columns[i][1];
-                        const formField = this.getFormField(name, dataType, this.state.newData, this.props.options);
+                        const currentData = Object.assign({}, this.props.modalData, this.state.newData)
+                        const formField = this.getFormField(name, dataType, currentData, this.props.options);
                         if (formField !== undefined) formFields.push(formField);
                     }
                     modalContent =
@@ -144,8 +145,6 @@ export default class BasicModal extends Component {
                 default:
                     break;
             }
-        } else {
-            this.state.newData = null;
         }
 
         return (
