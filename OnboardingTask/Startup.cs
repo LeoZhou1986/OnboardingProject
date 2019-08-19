@@ -23,12 +23,16 @@ namespace OnboardingTask
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.AddDbContext<OnboardingTaskContext>(opt => opt.UseInMemoryDatabase("OnboardingTask"));
+            services.AddDbContext<OnboardingTaskContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("OnboardingTaskDB")));
+            //services.AddDbContext<OnboardingTaskContext>(opt => opt.UseInMemoryDatabase("OnboardingTask"));
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
             });
+
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
